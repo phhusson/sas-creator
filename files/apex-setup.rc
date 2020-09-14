@@ -1,0 +1,90 @@
+import /system/etc/init/zygote/init.${ro.zygote}.rc
+
+on early-fs
+    mkdir /mnt/runtime/full 0755 root root
+    mkdir /mnt/runtime/full/self 0755 root root
+    mkdir /apex 0777 root root
+    mount tmpfs tmpfs /apex mode=0755,uid=0,gid=0
+    restorecon /apex
+
+
+    export ANDROID_RUNTIME_ROOT /apex/com.android.runtime
+    export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
+    symlink /system/product /product
+    symlink /system/system_ext /system_ext
+
+    mkdir /apex/com.android.mediaprovider 0777 root root
+    mkdir /apex/com.android.apex.cts.shim.v1_with_prebuilts 0777 root root
+    mkdir /apex/com.android.vndk.current 0777 root root
+    mkdir /apex/com.android.vndk.v28 0777 root root
+    mkdir /apex/com.android.sdkext 0777 root root
+    mkdir /apex/com.android.i18n 0777 root root
+    mkdir /apex/com.android.art.debug 0777 root root
+    mkdir /apex/com.android.media.swcodec 0777 root root
+    mkdir /apex/com.android.media 0777 root root
+    mkdir /apex/com.android.os.statsd 0777 root root
+    mkdir /apex/com.android.extservices 0777 root root
+    mkdir /apex/com.android.runtime 0777 root root
+    mkdir /apex/com.android.neuralnetworks 0777 root root
+    mkdir /apex/com.android.cellbroadcast 0777 root root
+    mkdir /apex/com.android.vndk.v27 0777 root root
+    mkdir /apex/com.android.adbd 0777 root root
+    mkdir /apex/com.android.tzdata 0777 root root
+    mkdir /apex/com.android.permission 0777 root root
+    mkdir /apex/com.android.tethering 0777 root root
+    mkdir /apex/com.android.resolv 0777 root root
+    mkdir /apex/com.android.ipsec 0777 root root
+    mkdir /apex/com.android.vndk.v29 0777 root root
+    mkdir /apex/com.android.conscrypt 0777 root root
+    mkdir /apex/com.android.wifi 0777 root root
+
+    mount none /system_ext/apex/com.android.mediaprovider /apex/com.android.mediaprovider bind
+    mount none /system_ext/apex/com.android.apex.cts.shim.v1_with_prebuilts /apex/com.android.apex.cts.shim.v1_with_prebuilts bind
+    mount none /system_ext/apex/com.android.vndk.current /apex/com.android.vndk.current bind
+    mount none /system_ext/apex/com.android.vndk.v28 /apex/com.android.vndk.v28 bind
+    mount none /system_ext/apex/com.android.sdkext /apex/com.android.sdkext bind
+    mount none /system_ext/apex/com.android.i18n /apex/com.android.i18n bind
+    mount none /system_ext/apex/com.android.art.debug /apex/com.android.art.debug bind
+    mount none /system_ext/apex/com.android.media.swcodec /apex/com.android.media.swcodec bind
+    mount none /system_ext/apex/com.android.media /apex/com.android.media bind
+    mount none /system_ext/apex/com.android.os.statsd /apex/com.android.os.statsd bind
+    mount none /system_ext/apex/com.android.extservices /apex/com.android.extservices bind
+    mount none /system_ext/apex/com.android.runtime /apex/com.android.runtime bind
+    mount none /system_ext/apex/com.android.neuralnetworks /apex/com.android.neuralnetworks bind
+    mount none /system_ext/apex/com.android.cellbroadcast /apex/com.android.cellbroadcast bind
+    mount none /system_ext/apex/com.android.vndk.v27 /apex/com.android.vndk.v27 bind
+    mount none /system_ext/apex/com.android.adbd /apex/com.android.adbd bind
+    mount none /system_ext/apex/com.android.tzdata /apex/com.android.tzdata bind
+    mount none /system_ext/apex/com.android.permission /apex/com.android.permission bind
+    mount none /system_ext/apex/com.android.tethering /apex/com.android.tethering bind
+    mount none /system_ext/apex/com.android.resolv /apex/com.android.resolv bind
+    mount none /system_ext/apex/com.android.ipsec /apex/com.android.ipsec bind
+    mount none /system_ext/apex/com.android.vndk.v29 /apex/com.android.vndk.v29 bind
+    mount none /system_ext/apex/com.android.conscrypt /apex/com.android.conscrypt bind
+    mount none /system_ext/apex/com.android.wifi /apex/com.android.wifi bind
+
+    exec -- /system/bin/apexd --bootstrap
+
+    mkdir /linkerconfig 0777 root root
+    mount tmpfs tmpfs /linkerconfig mode=0755,uid=0,gid=0
+    restorecon /linkerconfig
+
+    exec -- /system/bin/linkerconfig --target /linkerconfig
+
+    setprop service.adb.tcp.port 5555
+    setprop service.adb.transport goldfish
+
+    start adbd_apex
+
+service adbd_apex /apex/com.android.adbd/bin/adbd --root_seclabel=u:r:su:s0
+    class core
+    socket adbd stream 660 system system
+    disabled
+    override
+    seclabel u:r:adbd:s0
+
+
+on fs
+    exec u:r:su:s0 -- /system/bin/umount -l /product
+    exec u:r:su:s0 -- /system/bin/rmdir /product
+    symlink /system/product /product

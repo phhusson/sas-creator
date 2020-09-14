@@ -8,6 +8,7 @@ sz=$((sz * 2048 ))
 
 sum=2048
 newsum=$((sum+sz+2048))
+rm -f system-gpt
 truncate -s $((newsum*512)) system-gpt
 /sbin/sgdisk -C system-gpt
 /sbin/sgdisk --new=1:2048:+$sz system-gpt
