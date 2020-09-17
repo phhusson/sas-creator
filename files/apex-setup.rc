@@ -1,4 +1,4 @@
-import /system/etc/init/zygote/init.${ro.zygote}.rc
+import /system/etc/init/hw/init.${ro.zygote}.rc
 
 on early-fs
     mkdir /mnt/runtime/full 0755 root root
@@ -63,6 +63,9 @@ on early-fs
     mount none /system_ext/apex/com.android.conscrypt /apex/com.android.conscrypt bind
     mount none /system_ext/apex/com.android.wifi /apex/com.android.wifi bind
 
+    mkdir /apex/com.android.art 0777 root root
+    mount none /apex/com.android.art.debug /apex/com.android.art bind
+
     exec -- /system/bin/apexd --bootstrap
 
     mkdir /linkerconfig 0777 root root
@@ -71,10 +74,52 @@ on early-fs
 
     exec -- /system/bin/linkerconfig --target /linkerconfig
 
-    setprop service.adb.tcp.port 5555
-    setprop service.adb.transport goldfish
+    setprop ro.product.manufacturer phh
+    setprop ro.product.model phh
+    setprop persist.sys.usb.config mtp,adb
+
+    mkdir /data/system_de 0770 system system
+    mkdir /data/system_ce 0770 system system
+    mkdir /data/misc_de 01771 system misc
+    mkdir /data/misc_ce 01771 system misc
+    mkdir /data/user 0711 system system
+    mkdir /data/user_de 0711 system system
+    mkdir /data/vendor 0711 system system
+    mkdir /data/vendor_de 0711 system system
+    rm /data/user/0
+    mkdir /data/user/0 0700 system system
+    mount none /data/data /data/user/0 bind rec
+    mkdir /data/misc/installd 0700 root root
+    mkdir /data/misc/credstore 0777 system system
+
+    setprop sys.usb.config mtp,adb
+    setprop ro.build.fingerprint unknown/unknown/unknown:11/RP1A.200720.011/phh:userdebug/test-keys
+
+    # Create mirror directory for jit profiles
+    mkdir /data_mirror/cur_profiles 0700 root root
+    mount none /data/misc/profiles/cur /data_mirror/cur_profiles bind rec
+    mkdir /data_mirror 0777 root root
 
     start adbd_apex
+
+on post-fs-data
+    mkdir /data/system_de 0770 system system
+    mkdir /data/system_ce 0770 system system
+    mkdir /data/misc_de 01771 system misc
+    mkdir /data/misc_ce 01771 system misc
+    mkdir /data/user 0711 system system
+    mkdir /data/user_de 0711 system system
+    mkdir /data/vendor 0711 system system
+    mkdir /data/vendor_de 0711 system system
+    rm /data/user/0
+    mkdir /data/user/0 0700 system system
+    mount none /data/data /data/user/0 bind rec
+    mkdir /data/misc/installd 0700 root root
+    mkdir /data/misc/credstore 0777 system system
+    mkdir /data/misc/apexdata 0711 root root
+    mkdir /data/misc/apexdata/com.android.wifi 0711 root root
+
+    init_user0
 
 service adbd_apex /apex/com.android.adbd/bin/adbd --root_seclabel=u:r:su:s0
     class core
@@ -83,8 +128,30 @@ service adbd_apex /apex/com.android.adbd/bin/adbd --root_seclabel=u:r:su:s0
     override
     seclabel u:r:adbd:s0
 
+on post-fs-data
+    mkdir /data/misc/installd 0700 root root
+    mkdir /data/misc/credstore 0777 system system
+
+    mount tmpfs tmpfs /data_mirror nodev noexec nosuid mode=0700,uid=0,gid=1000
+    restorecon /data_mirror
+    mkdir /data_mirror/data_ce 0700 root root
+    mkdir /data_mirror/data_de 0700 root root
+
+    # Create CE and DE data directory for default volume
+    mkdir /data_mirror/data_ce/null 0700 root root
+    mkdir /data_mirror/data_de/null 0700 root root
+
+    # Bind mount CE and DE data directory to mirror's default volume directory
+    mount none /data/user /data_mirror/data_ce/null bind rec
+    mount none /data/user_de /data_mirror/data_de/null bind rec
 
 on fs
     exec u:r:su:s0 -- /system/bin/umount -l /product
     exec u:r:su:s0 -- /system/bin/rmdir /product
     symlink /system/product /product
+
+on property:sys.usb.state=adb
+    restart adbd_apex
+
+on property:sys.usb.state=mtp,adb
+    restart adbd_apex
