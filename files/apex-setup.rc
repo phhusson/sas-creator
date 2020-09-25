@@ -43,7 +43,7 @@ on early-fs
     mkdir /apex/com.android.ipsec 0777 root root
     mkdir /apex/com.android.vndk.v29 0777 root root
     mkdir /apex/com.android.conscrypt 0777 root root
-    mkdir /apex/com.android.wifi 0777 root root
+    mkdir /apex/com.android.wifi 0777 system system
 
     mount none /system_ext/apex/com.android.mediaprovider /apex/com.android.mediaprovider bind
     mount none /system_ext/apex/com.android.apex.cts.shim.v1_with_prebuilts /apex/com.android.apex.cts.shim.v1_with_prebuilts bind
