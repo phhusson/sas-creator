@@ -1,17 +1,23 @@
 import /system/etc/init/hw/init.${ro.zygote}.rc
 
 on early-fs
+    export LD_PRELOAD :
     mkdir /mnt/runtime/full 0755 root root
     mkdir /mnt/runtime/full/self 0755 root root
     mkdir /apex 0777 root root
     mount tmpfs tmpfs /apex mode=0755,uid=0,gid=0
     restorecon /apex
 
+    exec u:r:phhsu_daemon:s0 root -- /system/bin/setenforce 0
 
     export ANDROID_RUNTIME_ROOT /apex/com.android.runtime
     export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
+    exec u:r:su:s0 -- /system/bin/umount -l /product
+    exec u:r:su:s0 -- /system/bin/rmdir /product
     symlink /system/product /product
     symlink /system/system_ext /system_ext
+
+    mount none /system/phh/empty /sbin/adbd bind
 
     mkdir /apex/com.android.mediaprovider 0777 root root
     mkdir /apex/com.android.apex.cts.shim.v1_with_prebuilts 0777 root root
@@ -28,6 +34,7 @@ on early-fs
     mkdir /apex/com.android.neuralnetworks 0777 root root
     mkdir /apex/com.android.cellbroadcast 0777 root root
     mkdir /apex/com.android.vndk.v27 0777 root root
+    mkdir /apex/com.android.vndk.v26 0777 root root
     mkdir /apex/com.android.adbd 0777 root root
     mkdir /apex/com.android.tzdata 0777 root root
     mkdir /apex/com.android.permission 0777 root root
@@ -53,6 +60,7 @@ on early-fs
     mount none /system_ext/apex/com.android.neuralnetworks /apex/com.android.neuralnetworks bind
     mount none /system_ext/apex/com.android.cellbroadcast /apex/com.android.cellbroadcast bind
     mount none /system_ext/apex/com.android.vndk.v27 /apex/com.android.vndk.v27 bind
+    mount none /system_ext/apex/com.android.vndk.v26 /apex/com.android.vndk.v26 bind
     mount none /system_ext/apex/com.android.adbd /apex/com.android.adbd bind
     mount none /system_ext/apex/com.android.tzdata /apex/com.android.tzdata bind
     mount none /system_ext/apex/com.android.permission /apex/com.android.permission bind
@@ -72,11 +80,17 @@ on early-fs
     mount tmpfs tmpfs /linkerconfig mode=0755,uid=0,gid=0
     restorecon /linkerconfig
 
+    #vndk-detect is a shell script so requires a working linker config. But linkerconfig will default to vndk v27
+    #So we need to 1. setup some linkerconfig (being v27 is ok on v26 just to run a shellscript), 2. autodetect vndk; 3. regenerate linkerconfig
+    exec -- /system/bin/linkerconfig --target /linkerconfig
+    exec - root -- /system/bin/vndk-detect
+    exec u:r:phhsu_daemon:s0 root -- /system/bin/resetprop ro.vndk.version ${persist.sys.vndk}
+    setprop ro.vndk.version ${persist.sys.vndk}
     exec -- /system/bin/linkerconfig --target /linkerconfig
 
     setprop ro.product.manufacturer phh
     setprop ro.product.model phh
-    setprop persist.sys.usb.config mtp,adb
+    setprop persist.sys.usb.config adb
 
     mkdir /data/system_de 0770 system system
     mkdir /data/system_ce 0770 system system
@@ -91,8 +105,9 @@ on early-fs
     mount none /data/data /data/user/0 bind rec
     mkdir /data/misc/installd 0700 root root
     mkdir /data/misc/credstore 0777 system system
+    mkdir /data/rollback 0700 system system
 
-    setprop sys.usb.config mtp,adb
+    setprop sys.usb.config adb
     setprop ro.build.fingerprint unknown/unknown/unknown:11/RP1A.200720.011/phh:userdebug/test-keys
 
     # Create mirror directory for jit profiles
@@ -118,6 +133,7 @@ on post-fs-data
     mkdir /data/misc/credstore 0777 system system
     mkdir /data/misc/apexdata 0711 root root
     mkdir /data/misc/apexdata/com.android.wifi 0711 root root
+    mkdir /data/rollback 0700 system system
 
     init_user0
 

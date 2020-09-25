@@ -18,9 +18,11 @@ resize2fs s.img 2500M
 mount -o loop,rw s.img d
 (
 cd d
-for vndk in 28;do
+for vndk in 28 29;do
     for arch in 32 64;do
-        for lib in $(cd "$origin/vendor_vndk/vndk-${vndk}-arm${arch}"; echo *);do
+        d="$origin/vendor_vndk/vndk-${vndk}-arm${arch}"
+        [ ! -d "$p" ] && continue
+        for lib in $(cd "$d"; echo *);do
             p=lib
             [ "$arch" = 64 ] && p=lib64
             cp "$origin/vendor_vndk/vndk-${vndk}-arm${arch}/$lib" system/system_ext/apex/com.android.vndk.v${vndk}/${p}/$lib
