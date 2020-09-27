@@ -11,10 +11,11 @@ origin="$(dirname "$origin")"
 targetArch=64
 [ "$1" == 32 ] && targetArch=32
 
+[ -z "$ANDROID_BUILD_TOP" ] && ANDROID_BUILD_TOP=/build2/AOSP-11.0/
 if [ "$targetArch" == 32 ];then
-    simg2img /build2/AOSP-11.0/out/target/product/phhgsi_arm_ab/system.img s.img
+    simg2img $ANDROID_BUILD_TOP/out/target/product/phhgsi_arm_ab/system.img s.img
 else
-    simg2img /build2/AOSP-11.0/out/target/product/phhgsi_arm64_ab/system.img s.img
+    simg2img $ANDROID_BUILD_TOP/out/target/product/phhgsi_arm64_ab/system.img s.img
 fi
 rm -Rf tmp
 mkdir -p d tmp
