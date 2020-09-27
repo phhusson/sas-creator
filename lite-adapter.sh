@@ -14,7 +14,7 @@ origin="$(dirname "$origin")"
 simg2img "$ANDROID_BUILD_TOP"/out/target/product/phhgsi_arm64_ab/system.img s.img
 rm -Rf tmp
 mkdir -p d tmp
-e2fsck -f s.img
+e2fsck -y -f s.img
 resize2fs s.img 2500M
 mount -o loop,rw s.img d
 (
