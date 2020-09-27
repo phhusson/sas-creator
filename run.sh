@@ -41,6 +41,9 @@ rmdir system
 #cp "$origin/x86/libhidlbase.so" lib/libhidlbase.so
 #xattr -w security.selinux u:object_r:system_lib_file:s0 lib/libhdilbase.so
 
+ln -s /apex/com.android.adbd/bin/adbd bin/adbd
+xattr -ws security.selinux u:object_r:adbd_exec:s0 bin/adbd
+
 rm -Rf system_ext/apex/com.android.vndk.v29 system_ext/apex/com.android.vndk.v28
 
 sed -i \
@@ -114,6 +117,9 @@ xattr -w security.selinux u:object_r:system_file:s0 etc/init/credstore.rc
 
 cp system_ext/apex/com.android.media.swcodec/etc/init.rc etc/init/media-swcodec.rc
 xattr -w security.selinux u:object_r:system_file:s0 etc/init/media-swcodec.rc
+
+cp system_ext/apex/com.android.adbd/etc/init.rc etc/init/adbd.rc
+xattr -w security.selinux u:object_r:system_file:s0 etc/init/adbd.rc
 
 sed -i s/ro.iorapd.enable=true/ro.iorapd.enable=false/g etc/prop.default
 xattr -w security.selinux u:object_r:system_file:s0 etc/prop.default
