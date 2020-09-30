@@ -22,7 +22,7 @@ cd d
 for vndk in 28 29;do
     for arch in 32 64;do
         d="$origin/vendor_vndk/vndk-${vndk}-arm${arch}"
-        [ ! -d "$p" ] && continue
+        [ ! -d "$d" ] && continue
         for lib in $(cd "$d"; echo *);do
             p=lib
             [ "$arch" = 64 ] && p=lib64
