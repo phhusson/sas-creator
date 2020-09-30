@@ -8,7 +8,7 @@ set -ex
 origin="$(readlink -f -- "$0")"
 origin="$(dirname "$origin")"
 
-[ ! -d vendor_vndk ] && git clone https://github.com/phhusson/vendor_vndk
+[ ! -d vendor_vndk ] && git clone https://github.com/phhusson/vendor_vndk -b android-10.0
 
 [ -z "$ANDROID_BUILD_TOP" ] && ANDROID_BUILD_TOP=/build2/AOSP-11.0/
 simg2img "$ANDROID_BUILD_TOP"/out/target/product/phhgsi_arm64_ab/system.img s.img
