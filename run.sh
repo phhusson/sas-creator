@@ -31,21 +31,10 @@ find -maxdepth 1 -not -name system -not -name . -not -name .. -exec rm -Rf '{}' 
 mv system/* .
 rmdir system
 
-#cp "$origin/x86/libbinder-27.so" system_ext/apex/com.android.vndk.v27/lib/libbinder.so
-#cp "$origin/x86/libhwbinder-27.so" system_ext/apex/com.android.vndk.v27/lib/libhwbinder.so
-#xattr -w security.selinux u:object_r:system_lib_file:s0 system_ext/apex/com.android.vndk.v27/lib/libbinder.so system_ext/apex/com.android.vndk.v27/lib/libhwbinder.so
-#
-#cp "$origin/x86/libbinder-30.so" lib/libbinder.so
-#cp "$origin/x86/libhwbinder-30.so" lib/libhwbinder.so
-#xattr -w security.selinux u:object_r:system_lib_file:s0 lib/libbinder.so lib/libhwbinder.so
-#
-#cp "$origin/x86/libhidlbase.so" lib/libhidlbase.so
-#xattr -w security.selinux u:object_r:system_lib_file:s0 lib/libhdilbase.so
-
 ln -s /apex/com.android.adbd/bin/adbd bin/adbd
 xattr -ws security.selinux u:object_r:adbd_exec:s0 bin/adbd
 
-rm -Rf system_ext/apex/com.android.vndk.v29 system_ext/apex/com.android.vndk.v28
+rm -Rf system_ext/apex/com.android.vndk.v29
 
 sed -i \
     -e '/ro.radio.noril/d' \
@@ -109,13 +98,6 @@ sed -i -E \
     etc/init/credstore.rc
 xattr -w security.selinux u:object_r:system_file:s0 etc/init/credstore.rc
 
-#for lib in $(cd "$origin/vndk-27-arm32"; echo *.so);do
-#    cp "$origin/vndk-27-arm32/$lib" system_ext/apex/com.android.vndk.v27/lib/$lib
-#    xattr -w security.selinux u:object_r:system_lib_file:s0 system_ext/apex/com.android.vndk.v27/lib/$lib
-#    echo $lib >> system_ext/apex/com.android.vndk.v27/etc/vndkcore.libraries.27.txt
-#done
-#xattr -w security.selinux u:object_r:system_file:s0 system_ext/apex/com.android.vndk.v27/etc/vndkcore.libraries.27.txt
-
 cp system_ext/apex/com.android.media.swcodec/etc/init.rc etc/init/media-swcodec.rc
 xattr -w security.selinux u:object_r:system_file:s0 etc/init/media-swcodec.rc
 
@@ -151,7 +133,7 @@ for arch in $archs;do
     xattr -w security.selinux u:object_r:system_file:s0 system_ext/apex/com.android.vndk.v${vndk}/etc/vndksp.libraries.${vndk}.txt
 done
 
-for vndk in 27 26;do
+for vndk in 28 27 26;do
     archs="64 32"
     if [ "$targetArch" == 32 ];then
         archs="32 32-binder32"
@@ -195,9 +177,11 @@ xattr -w security.selinux u:object_r:system_file:s0 etc/init/bpfloader.rc etc/in
 sed -i -e s/readproc//g -e s/reserved_disk//g etc/init/hw/init.zygote64.rc etc/init/hw/init.zygote64_32.rc etc/init/hw/init.zygote32_64.rc etc/init/hw/init.zygote32.rc
 xattr -w security.selinux u:object_r:system_file:s0 etc/init/hw/init.zygote64.rc etc/init/hw/init.zygote64_32.rc etc/init/hw/init.zygote32_64.rc etc/init/hw/init.zygote32.rc
 
-mkdir -p lib/vndk-sp-26
-ln -s /apex/com.android.vndk.v26/lib/hw lib/vndk-sp-26/hw
-xattr -sw security.selinux u:object_r:system_lib_file:s0 lib/vndk-sp-26/hw
+ln -s /apex/com.android.vndk.v26/lib/ lib/vndk-sp-26
+xattr -sw security.selinux u:object_r:system_lib_file:s0 lib/vndk-sp-26
+
+ln -s /apex/com.android.vndk.v26/lib/ lib/vndk-26
+xattr -sw security.selinux u:object_r:system_lib_file:s0 lib/vndk-26
 
 )
 sleep 1
