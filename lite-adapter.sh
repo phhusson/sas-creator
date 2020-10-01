@@ -10,8 +10,15 @@ origin="$(dirname "$origin")"
 
 [ ! -d vendor_vndk ] && git clone https://github.com/phhusson/vendor_vndk -b android-10.0
 
+targetArch=64
+[ "$1" == 32 ] && targetArch=32
+
 [ -z "$ANDROID_BUILD_TOP" ] && ANDROID_BUILD_TOP=/build2/AOSP-11.0/
-simg2img "$ANDROID_BUILD_TOP"/out/target/product/phhgsi_arm64_ab/system.img s.img
+if [ "$targetArch" == 32 ];then
+    simg2img $ANDROID_BUILD_TOP/out/target/product/phhgsi_a64_ab/system.img s.img
+else
+    simg2img $ANDROID_BUILD_TOP/out/target/product/phhgsi_arm64_ab/system.img s.img
+fi
 rm -Rf tmp
 mkdir -p d tmp
 e2fsck -y -f s.img
@@ -23,9 +30,10 @@ for vndk in 28 29;do
     for arch in 32 64;do
         d="$origin/vendor_vndk/vndk-${vndk}-arm${arch}"
         [ ! -d "$d" ] && continue
+        p=lib
+        [ "$arch" = 64 ] && p=lib64
+        [ ! -d system/system_ext/apex/com.android.vndk.v${vndk}/${p}/ ] && continue
         for lib in $(cd "$d"; echo *);do
-            p=lib
-            [ "$arch" = 64 ] && p=lib64
             cp "$origin/vendor_vndk/vndk-${vndk}-arm${arch}/$lib" system/system_ext/apex/com.android.vndk.v${vndk}/${p}/$lib
             xattr -w security.selinux u:object_r:system_lib_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/${p}/$lib
             echo $lib >> system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
