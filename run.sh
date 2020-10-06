@@ -180,9 +180,13 @@ xattr -w security.selinux u:object_r:system_file:s0 etc/init/hw/init.zygote64.rc
 
 ln -s /apex/com.android.vndk.v26/lib/ lib/vndk-sp-26
 xattr -sw security.selinux u:object_r:system_lib_file:s0 lib/vndk-sp-26
-
 ln -s /apex/com.android.vndk.v26/lib/ lib/vndk-26
 xattr -sw security.selinux u:object_r:system_lib_file:s0 lib/vndk-26
+
+ln -s /apex/com.android.vndk.v26/lib64/ lib64/vndk-sp-26
+xattr -sw security.selinux u:object_r:system_lib_file:s0 lib64/vndk-sp-26
+ln -s /apex/com.android.vndk.v26/lib/ lib64/vndk-26
+xattr -sw security.selinux u:object_r:system_lib_file:s0 lib64/vndk-26
 
 )
 sleep 1
