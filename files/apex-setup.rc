@@ -132,7 +132,8 @@ on post-fs-data
     mkdir /data/misc/installd 0700 root root
     mkdir /data/misc/credstore 0777 system system
     mkdir /data/misc/apexdata 0711 root root
-    mkdir /data/misc/apexdata/com.android.wifi 0711 root root
+    mkdir /data/misc/apexdata/com.android.wifi 0771 system system
+    chown system system /data/misc/apexdata/com.android.wifi
     mkdir /data/rollback 0700 system system
 
     init_user0
