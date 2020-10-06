@@ -78,6 +78,7 @@ sed -i \
 echo 'getdents64: 1' >> etc/seccomp_policy/mediaextractor.policy
 echo 'getdents64: 1' >> system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
 echo 'rt_sigprocmask: 1' >> etc/seccomp_policy/mediaextractor.policy
+echo 'newfstatat: 1' >> etc/seccomp_policy/mediaextractor.policy
 echo 'rt_sigprocmask: 1' >> system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
 echo 'rt_sigprocmask: 1' >> etc/seccomp_policy/mediacodec.policy
 xattr -w security.selinux u:object_r:system_file:s0 system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy system_ext/apex/com.android.media.swcodec/etc/seccomp_policy/mediaswcodec.policy
