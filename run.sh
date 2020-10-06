@@ -161,9 +161,6 @@ xattr -w security.selinux u:object_r:sepolicy_file:s0 etc/init/llkd-debuggable.r
 sed -i 's/v27/v26/g' system_ext/apex/com.android.vndk.v26/apex_manifest.pb
 xattr -w security.selinux u:object_r:system_file:s0 system_ext/apex/com.android.vndk.v26/apex_manifest.pb
 
-echo -e '\nsetenforce 0\n' >> bin/rw-system.sh
-xattr -w security.selinux u:object_r:phhsu_exec:s0 bin/rw-system.sh
-
 sed -E -i 's/(.*allowx adbd functionfs .*0x6782)/\1 0x67e7/g' etc/selinux/plat_sepolicy.cil
 xattr -w security.selinux u:object_r:sepolicy_file:s0 etc/selinux/plat_sepolicy.cil
 
