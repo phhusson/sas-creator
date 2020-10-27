@@ -181,10 +181,12 @@ xattr -sw security.selinux u:object_r:system_lib_file:s0 lib/vndk-sp-26
 ln -s /apex/com.android.vndk.v26/lib/ lib/vndk-26
 xattr -sw security.selinux u:object_r:system_lib_file:s0 lib/vndk-26
 
+if [ -d lib64 ];then
 ln -s /apex/com.android.vndk.v26/lib64/ lib64/vndk-sp-26
 xattr -sw security.selinux u:object_r:system_lib_file:s0 lib64/vndk-sp-26
 ln -s /apex/com.android.vndk.v26/lib/ lib64/vndk-26
 xattr -sw security.selinux u:object_r:system_lib_file:s0 lib64/vndk-26
+fi
 
 )
 sleep 1
