@@ -22,7 +22,7 @@ fi
 rm -Rf tmp
 mkdir -p d tmp
 e2fsck -y -f s.img
-resize2fs s.img 2500M
+resize2fs s.img 3500M
 mount -o loop,rw s.img d
 (
 cd d
