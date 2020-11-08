@@ -8,12 +8,8 @@ on early-fs
     mount tmpfs tmpfs /apex mode=0755,uid=0,gid=0
     restorecon /apex
 
-    exec u:r:phhsu_daemon:s0 root -- /system/bin/setenforce 0
-
     export ANDROID_RUNTIME_ROOT /apex/com.android.runtime
     export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
-    exec u:r:su:s0 -- /system/bin/umount -l /product
-    exec u:r:su:s0 -- /system/bin/rmdir /product
     symlink /system/product /product
     symlink /system/system_ext /system_ext
 
