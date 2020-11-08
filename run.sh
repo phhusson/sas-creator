@@ -118,6 +118,9 @@ archs="64 32"
 if [ "$targetArch" == 32 ];then
     archs=32
 fi
+
+echo libstdc++.so >> system_ext/apex/com.android.vndk.v26/etc/vndksp.libraries.26.txt
+
 for arch in $archs;do
     for lib in $(cd "$origin/vendor_vndk/vndk-sp-${vndk}-arm${arch}"; echo *);do
         #TODO: handle "hw"
