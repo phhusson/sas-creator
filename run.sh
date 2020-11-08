@@ -58,8 +58,6 @@ sed -i \
 
 xattr -w security.selinux u:object_r:property_contexts_file:s0 etc/selinux/plat_property_contexts
 
-xattr -w security.selinux u:object_r:system_file:s0 etc/selinux/plat_property_contexts
-
 cp "$origin"/files/apex-setup.rc etc/init/
 xattr -w security.selinux u:object_r:system_file:s0 etc/init/apex-setup.rc
 
