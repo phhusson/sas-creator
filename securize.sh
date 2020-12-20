@@ -20,7 +20,7 @@ if [ ! -f "$srcFile" ];then
 	exit 1
 fi
 
-simg2img "$srcFile" s-secure.img || cp "$srcFile" s-secure.img
+"$origin"/simg2img "$srcFile" s-secure.img || cp "$srcFile" s-secure.img
 
 rm -Rf tmp
 mkdir -p d tmp
