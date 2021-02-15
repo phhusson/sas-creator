@@ -13,15 +13,10 @@ targetArch=64
 
 [ -z "$ANDROID_BUILD_TOP" ] && ANDROID_BUILD_TOP=/build2/AOSP-11.0/
 if [ "$targetArch" == 32 ];then
-    srcFile="$ANDROID_BUILD_TOP/out/target/product/phhgsi_arm_ab/system.img"
+    simg2img $ANDROID_BUILD_TOP/out/target/product/phhgsi_arm_ab/system.img s.img
 else
-    srcFile="$ANDROID_BUILD_TOP/out/target/product/phhgsi_arm64_ab/system.img"
+    simg2img $ANDROID_BUILD_TOP/out/target/product/phhgsi_arm64_ab/system.img s.img
 fi
-if [ -f "$1" ];then
-    targetArch=32
-    srcFile="$1"
-fi
-simg2img "$srcFile" s.img
 rm -Rf tmp
 mkdir -p d tmp
 e2fsck -y -f s.img
@@ -73,6 +68,7 @@ xattr -w security.selinux u:object_r:system_file:s0 etc/init/init-environ.rc
 
 sed -i \
     -e /@include/d \
+    -e /newfstatat/d \
     -e s/MREMAP_MAYMOVE/1/g \
     etc/seccomp_policy/mediaextractor.policy \
     etc/seccomp_policy/mediacodec.policy \
@@ -81,6 +77,7 @@ sed -i \
 echo 'getdents64: 1' >> etc/seccomp_policy/mediaextractor.policy
 echo 'getdents64: 1' >> system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
 echo 'rt_sigprocmask: 1' >> etc/seccomp_policy/mediaextractor.policy
+echo 'newfstatat: 1' >> etc/seccomp_policy/mediaextractor.policy
 echo 'rt_sigprocmask: 1' >> system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
 echo 'rt_sigprocmask: 1' >> etc/seccomp_policy/mediacodec.policy
 echo 'rt_sigaction: 1' >> etc/seccomp_policy/mediacodec.policy
