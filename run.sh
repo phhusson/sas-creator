@@ -68,7 +68,6 @@ xattr -w security.selinux u:object_r:system_file:s0 etc/init/init-environ.rc
 
 sed -i \
     -e /@include/d \
-    -e /newfstatat/d \
     -e s/MREMAP_MAYMOVE/1/g \
     etc/seccomp_policy/mediaextractor.policy \
     etc/seccomp_policy/mediacodec.policy \
@@ -77,7 +76,6 @@ sed -i \
 echo 'getdents64: 1' >> etc/seccomp_policy/mediaextractor.policy
 echo 'getdents64: 1' >> system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
 echo 'rt_sigprocmask: 1' >> etc/seccomp_policy/mediaextractor.policy
-echo 'newfstatat: 1' >> etc/seccomp_policy/mediaextractor.policy
 echo 'rt_sigprocmask: 1' >> system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
 echo 'rt_sigprocmask: 1' >> etc/seccomp_policy/mediacodec.policy
 echo 'rt_sigaction: 1' >> etc/seccomp_policy/mediacodec.policy
