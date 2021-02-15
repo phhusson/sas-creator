@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#Usage:
+#bash run.sh <32|64> [/path/to/system/image]
+
 #cleanups
 umount d
 
@@ -13,10 +16,21 @@ targetArch=64
 
 [ -z "$ANDROID_BUILD_TOP" ] && ANDROID_BUILD_TOP=/build2/AOSP-11.0/
 if [ "$targetArch" == 32 ];then
-    simg2img $ANDROID_BUILD_TOP/out/target/product/phhgsi_arm_ab/system.img s.img
+    srcFile="$ANDROID_BUILD_TOP/out/target/product/phhgsi_arm_ab/system.img"
 else
-    simg2img $ANDROID_BUILD_TOP/out/target/product/phhgsi_arm64_ab/system.img s.img
+    srcFile="$ANDROID_BUILD_TOP/out/target/product/phhgsi_arm64_ab/system.img"
 fi
+if [ -f "$2" ];then
+    srcFile="$2"
+fi
+
+if [ ! -f "$srcFile" ];then
+	echo "Usage: sudo bash run.sh <32|64> [/path/to/system.img]"
+	exit 1
+fi
+
+simg2img "$srcFile" s.img || cp "$srcFile" s.img
+
 rm -Rf tmp
 mkdir -p d tmp
 e2fsck -y -f s.img
