@@ -83,18 +83,17 @@ sed -i 's/on early-init/on init/g' etc/init/init-environ.rc
 xattr -w security.selinux u:object_r:system_file:s0 etc/init/init-environ.rc
 
 sed -i \
-    -e /@include/d \
     -e s/MREMAP_MAYMOVE/1/g \
     etc/seccomp_policy/mediaextractor.policy \
     etc/seccomp_policy/mediacodec.policy \
     system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy \
     system_ext/apex/com.android.media.swcodec/etc/seccomp_policy/mediaswcodec.policy
-echo 'getdents64: 1' >> etc/seccomp_policy/mediaextractor.policy
-echo 'getdents64: 1' >> system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
-echo 'rt_sigprocmask: 1' >> etc/seccomp_policy/mediaextractor.policy
-echo 'rt_sigprocmask: 1' >> system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
-echo 'rt_sigprocmask: 1' >> etc/seccomp_policy/mediacodec.policy
-echo 'rt_sigaction: 1' >> etc/seccomp_policy/mediacodec.policy
+sed -i '0,/^@include/s/^@include.*/getdents64: 1\n&/' etc/seccomp_policy/mediaextractor.policy \
+  system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
+sed -i '0,/^@include/s/^@include.*/rt_sigprocmask: 1\n&/' etc/seccomp_policy/mediaextractor.policy \
+  system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy
+sed -e '0,/^@include/s/^@include.*/rt_sigprocmask: 1\nrt_sigaction: 1\n&/' etc/seccomp_policy/mediacodec.policy
+
 xattr -w security.selinux u:object_r:system_file:s0 system_ext/apex/com.android.media/etc/seccomp_policy/mediaextractor.policy system_ext/apex/com.android.media.swcodec/etc/seccomp_policy/mediaswcodec.policy
 xattr -w security.selinux u:object_r:system_seccomp_policy_file:s0 etc/seccomp_policy/mediacodec.policy etc/seccomp_policy/mediaextractor.policy etc/seccomp_policy/mediacodec.policy
 
