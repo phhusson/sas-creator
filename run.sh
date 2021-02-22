@@ -50,6 +50,8 @@ ln -s /apex/com.android.adbd/bin/adbd bin/adbd
 xattr -ws security.selinux u:object_r:adbd_exec:s0 bin/adbd
 
 rm -Rf system_ext/apex/com.android.vndk.v29
+rm -Rf apex/*.apex
+rm -Rf system_ext/apex/*.apex
 
 sed -i \
     -e '/ro.radio.noril/d' \
