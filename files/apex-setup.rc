@@ -80,7 +80,7 @@ on early-fs
     #So we need to 1. setup some linkerconfig (being v27 is ok on v26 just to run a shellscript), 2. autodetect vndk; 3. regenerate linkerconfig
     exec -- /system/bin/linkerconfig --target /linkerconfig
     exec - root -- /system/bin/vndk-detect
-    exec u:r:phhsu_daemon:s0 root -- /system/bin/resetprop ro.vndk.version ${persist.sys.vndk}
+    exec u:r:phhsu_daemon:s0 root -- /system/bin/resetprop_phh ro.vndk.version ${persist.sys.vndk}
     setprop ro.vndk.version ${persist.sys.vndk}
     exec -- /system/bin/linkerconfig --target /linkerconfig
 
