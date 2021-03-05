@@ -118,6 +118,9 @@ xattr -w security.selinux u:object_r:system_file:s0 etc/init/media-swcodec.rc
 cp system_ext/apex/com.android.adbd/etc/init.rc etc/init/adbd.rc
 xattr -w security.selinux u:object_r:system_file:s0 etc/init/adbd.rc
 
+cp system_ext/apex/com.android.adbd/lib64/libadb_protos.so lib64/libadb_protos.so
+xattr -w security.selinux u:object_r:system_file:s0 lib64/libadb_protos.so
+
 sed -i s/ro.iorapd.enable=true/ro.iorapd.enable=false/g etc/prop.default
 xattr -w security.selinux u:object_r:system_file:s0 etc/prop.default
 
