@@ -50,6 +50,9 @@ rm -Rf system_ext/apex/com.android.vndk.v29
 rm -Rf apex/*.apex
 rm -Rf system_ext/apex/*.apex
 
+sed -i 's/_bvN/_avN/g;s/_bgN/_agN/g;s/_bvS/_avS/g;s/_bgS/_agS/g;s/_boN/_aoN/g;s/_boS/_aoS/g' build.prop
+chmod 600 build.prop && xattr -w security.selinux u:object_r:system_file:s0 build.prop
+
 sed -i \
     -e '/ro.radio.noril/d' \
     -e '/sys.usb.config/d' \
