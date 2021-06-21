@@ -11,6 +11,8 @@ set -ex
 origin="$(readlink -f -- "$0")"
 origin="$(dirname "$origin")"
 
+[ ! -d vendor_vndk ] && git clone https://github.com/phhusson/vendor_vndk -b android-10.0
+
 targetArch=64
 [ "$1" == 32 ] && targetArch=32
 
@@ -29,7 +31,7 @@ if [ ! -f "$srcFile" ];then
 	exit 1
 fi
 
-simg2img "$srcFile" s.img || cp "$srcFile" s.img
+"$origin"/simg2img "$srcFile" s.img || cp "$srcFile" s.img
 
 rm -Rf tmp
 mkdir -p d tmp
