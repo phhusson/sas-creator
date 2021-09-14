@@ -179,10 +179,6 @@ for vndk in 28 27 26;do
     done
 done
 
-sed -i 's/readproc//g' etc/init/llkd-debuggable.rc etc/init/llkd.rc
-xattr -w security.selinux u:object_r:sepolicy_file:s0 etc/init/llkd-debuggable.rc etc/init/llkd.rc
-
-
 sed -i 's/v27/v26/g' system_ext/apex/com.android.vndk.v26/apex_manifest.pb
 xattr -w security.selinux u:object_r:system_file:s0 system_ext/apex/com.android.vndk.v26/apex_manifest.pb
 
