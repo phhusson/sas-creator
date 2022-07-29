@@ -29,10 +29,10 @@ The output for above would be `s.img`.
 
 Windows users (with fairly recent hardware and Windows version) can run these scripts on Docker, without having to set up a full Ubuntu installation/VM. For people who are new to Docker, below are crude steps to e.g. securize an image with it:
 
- 1. [Install Docker Desktop](https://docs.docker.com/desktop/windows/install/).
+ 1. [Install Docker Desktop](https://docs.docker.com/desktop/windows/install/). When prompted to select between WSL2 or Hyper-V backends, choose WSL2.
  2. Make sure Docker is in **Linux** Container mode (it should be by default) - right click the tray icon, one of the menu items should say "Switch to **Windows** Containers", **don't** click it.
  3. Pick/make a folder (e.g. `C:\out`) and put your GSI image there (e.g. `system.img`).
- 4. Open Docker Desktop - Settings - Resources - File sharing and add the above folder.
+ 4. Only if on Hyper-V backend: open Docker Desktop - Settings - Resources - File sharing and add the above folder. This settings won't be present on WSL2 backend.
  5. Open Command Prompt (`cmd`) and run:
 ```
 docker pull ubuntu
